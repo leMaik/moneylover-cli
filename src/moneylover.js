@@ -16,11 +16,30 @@ class MoneyLoverClient {
       body
     }).use(popsicle.plugins.parse('json'))
     if (res.body.error !== 0) {
-      console.error(res.request)
+      console.error(res)
       throw new Error(`Error ${res.body.error}, ${res.body.msg}`)
     } else {
       return res.body.data
     }
+  }
+
+  static async getToken (email, password) {
+    const loginUrl = await popsicle.request({
+      method: 'POST',
+      url: 'https://web.moneylover.me/api/user/login-url'
+    }).use(popsicle.plugins.parse('json'))
+
+    const res = await popsicle.request({
+      method: 'POST',
+      url: 'https://oauth.moneylover.me/token',
+      headers: {
+        authorization: `Bearer ${loginUrl.body.data.request_token}`,
+        client: loginUrl.body.data.login_url.match('client=(.+?)&')[1]
+      },
+      body: { email, password }
+    }).use(popsicle.plugins.parse('json'))
+
+    return res.body.access_token
   }
 
   getUserInfo () {

@@ -15,18 +15,17 @@ require('yargs')
     yargs
       .option('jwt', { describe: 'Authenticate using a JWT token' })
   }, async (argv) => {
-    if (argv.jwt) {
-      try {
-        const jwtToken = jwt.decode(argv.jwt)
-        const ml = new MoneyLover(argv.jwt)
-        const userInfo = await ml.getUserInfo()
-        console.log(`Logged in as ${userInfo.email} until ${new Date(jwtToken.exp * 1000)}`)
-        await fse.writeJson(configFile, { jwtToken: argv.jwt })
-      } catch (e) {
-        console.error('Login failed, invalid token')
-      }
-    } else {
-      console.log(argv.username)
+    const token = argv.jwt
+      ? argv.jwt
+      : await MoneyLover.getToken(argv.email, require('readline-sync').question('Password: ', { hideEchoBack: true, mask: '' }))
+    try {
+      const jwtToken = jwt.decode(token)
+      const ml = new MoneyLover(token)
+      const userInfo = await ml.getUserInfo()
+      console.log(`Logged in as ${userInfo.email} until ${new Date(jwtToken.exp * 1000)}`)
+      await fse.writeJson(configFile, { jwtToken: token })
+    } catch (e) {
+      console.error('Login failed')
     }
   })
   .command('logout', 'Remove authentication file', () => {}, async (argv) => {

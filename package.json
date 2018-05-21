@@ -1,8 +1,9 @@
 {
   "name": "moneylover-cli",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A CLI tool for Money Lover.",
   "main": "src/index.js",
+  "bin": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -27,6 +28,7 @@
     "fs-extra": "^6.0.1",
     "jsonwebtoken": "^8.2.1",
     "popsicle": "^9.2.0",
+    "readline-sync": "^1.4.9",
     "yargs": "^11.0.0"
   }
 }

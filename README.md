@@ -5,7 +5,7 @@ Money Lover CLI uses the API underneath that webapp to let you track your expens
 
 ## Installation
 ```
-npm i -g money-lover-cli
+npm i -g moneylover-cli
 ```
 
 ## Usage
