@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "A CLI tool for Money Lover.",
   "main": "src/index.js",
-  "bin": "src/index.js",
+  "bin": {
+    "moneylover": "src/index.js"
+  },
   "scripts": {
     "test": "echo \"No test specified\""
   },

@@ -13,6 +13,7 @@ const configFile = path.join(os.homedir(), '.moneylovercli')
 require('yargs')
   .command('login [email]', 'Authenticate', (yargs) => {
     yargs
+      .positional('email', { describe: 'E-mail address', type: 'string' })
       .option('jwt', { describe: 'Authenticate using a JWT token' })
   }, async (argv) => {
     const token = argv.jwt
@@ -76,6 +77,7 @@ require('yargs')
   })
   .command('categories <wallet>', 'Get the expense/income categories of a wallet', (yargs) => {
     yargs
+      .positional('wallet', { describe: 'The wallet name', type: 'string' })
       .option('income', { describe: 'Only show income categories', type: 'bool' })
       .option('expense', { describe: 'Only show expense categories', type: 'bool' })
   }, async (argv) => {
@@ -105,10 +107,11 @@ require('yargs')
   })
   .command('expense <wallet> <amount>', 'Add an expense', (yargs) => {
     yargs
-      .option('wallet', {
-        describe: 'The wallet name'
+      .positional('wallet', {
+        describe: 'The wallet name',
+        type: 'string'
       })
-      .option('amount', {
+      .positional('amount', {
         describe: 'Amount of money',
         type: 'number'
       })
@@ -162,10 +165,11 @@ require('yargs')
   })
   .command('income <wallet> <amount>', 'Add an income', (yargs) => {
     yargs
-      .option('wallet', {
-        describe: 'The wallet name'
+      .positional('wallet', {
+        describe: 'The wallet name',
+        type: 'string'
       })
-      .option('amount', {
+      .positional('amount', {
         describe: 'Amount of money',
         type: 'number'
       })
