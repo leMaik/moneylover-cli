@@ -16,9 +16,16 @@ module.exports.handler = async (argv) => {
   const { configFile } = require('../util')
   const MoneyLover = require('../moneylover')
 
-  const token = argv.jwt
-    ? argv.jwt
-    : await MoneyLover.getToken(argv.email, require('readline-sync').question('Password: ', { hideEchoBack: true, mask: '' }))
+  let token
+  if (argv.jwt) {
+    token = argv.jwt
+  } else if (argv.email) {
+    const password = require('readline-sync')
+      .question('Password: ', { hideEchoBack: true, mask: '' })
+    token = await MoneyLover.getToken(argv.email, password)
+  } else {
+    token = await require('../chromeLogin')()
+  }
   try {
     const jwtToken = jwt.decode(token)
     const ml = new MoneyLover(token)

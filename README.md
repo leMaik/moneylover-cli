@@ -10,18 +10,25 @@ npm i -g moneylover-cli
 
 ## Usage
 ### Authentication
+
+#### Using a MoneyLover account
 If you are using a Money Lover account for login, you can log in with the following command.
 
 ```
 moneylover login <email>
 ```
 
-If you are using Google or Facebook, you'll have to manually log into the webapp for now and extract your JWT token from the `Authorization` header of API requests (without the `Bearer` prefix), e.g. `eyJ0e…`. You can then log in with the following command.
+#### Using Facebook or Google (with Google Chrome installed)
+If you are using Google or Facebook and have Google Chrome installed, a browser window will open and you can authenticate as usual. The window will automatically close after successful authentication. Just run `moneylover login` without any arguments.
+
+#### Using Facebook or Google (without Google Chrome installed)
+You'll have to manually log into the webapp for now and extract your JWT token from the `Authorization` header of API requests (without the `Bearer` prefix), e.g. `eyJ0e…`. You can then log in with the following command.
 
 ```
 moneylover login --jwt eyJ0e…
 ```
 
+### Logout
 The token is only valid for a week, and will be cached in your home directory as `.moneylovercli`. To remove that file, run
 
 ```
