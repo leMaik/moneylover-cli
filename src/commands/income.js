@@ -53,7 +53,7 @@ module.exports.handler = async (argv) => {
       wallet,
       category,
       amount: argv.amount,
-      note: argv.note,
+      note: argv.note || '',
       date
     })
   } catch (e) {
