@@ -15,9 +15,17 @@ class MoneyLoverClient {
       },
       body
     }).use(popsicle.plugins.parse('json'))
-    if (res.body.error !== 0) {
-      console.error(res)
-      throw new Error(`Error ${res.body.error}, ${res.body.msg}`)
+
+    if (res.body.error != null && res.body.error !== 0) {
+      const error = new Error(`Error ${res.body.error}, ${res.body.msg}`)
+      error.code = res.body.error
+      error.originalMessage = res.body.msg
+      throw error
+    } else if (res.body.e != null) {
+      const error = new Error(`Error ${res.body.e}, ${res.body.message}`)
+      error.code = res.body.e
+      error.originalMessage = res.body.message
+      throw error
     } else {
       return res.body.data
     }
