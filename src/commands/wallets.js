@@ -4,7 +4,7 @@ module.exports.builder = (yargs) => yargs
 
 module.exports.handler = async (argv) => {
   const chalk = require('chalk')
-  const Table = require('cli-table2')
+  const Table = require('cli-table3')
   const { getMoneyLover } = require('../util')
 
   const ml = await getMoneyLover()

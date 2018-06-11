@@ -15,7 +15,7 @@ module.exports.builder = (yargs) => yargs
   })
 
 module.exports.handler = async (argv) => {
-  const Table = require('cli-table2')
+  const Table = require('cli-table3')
   const { getMoneyLover } = require('../util')
   const MoneyLover = require('../moneylover')
 
