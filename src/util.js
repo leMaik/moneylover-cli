@@ -1,6 +1,7 @@
 const os = require('os')
 const fse = require('fs-extra')
 const path = require('path')
+const { prompt } = require('inquirer')
 const MoneyLover = require('./moneylover')
 
 const configFile = path.join(os.homedir(), '.moneylovercli')
@@ -22,8 +23,16 @@ function printTransaction (transaction) {
   console.log(`Wallet:   ${transaction.wallet.name}`)
 }
 
+function promptOne(question) {
+  return prompt([{
+    ...question,
+    name: 'question'
+  }]).then(({ question }) => question)
+}
+
 module.exports = {
   configFile,
   getMoneyLover,
-  printTransaction
+  printTransaction,
+  promptOne
 }

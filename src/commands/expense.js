@@ -1,4 +1,4 @@
-module.exports.command = 'expense <wallet> <amount>'
+module.exports.command = 'expense [wallet] [amount]'
 module.exports.describe = 'Add an expense'
 module.exports.builder = (yargs) => yargs
   .positional('wallet', {
@@ -22,23 +22,63 @@ module.exports.builder = (yargs) => yargs
   .option('date', {
     describe: 'Transaction date',
     alias: 'd',
-    default: 'today',
     type: 'string'
   })
 
 module.exports.handler = async (argv) => {
   const chrono = require('chrono-node')
-  const { getMoneyLover, printTransaction } = require('../util')
+  const { getMoneyLover, printTransaction, promptOne } = require('../util')
 
   const ml = await getMoneyLover()
   const wallets = await ml.getWallets()
+
+  if (argv.amount == null) {
+    argv.amount = await promptOne({
+      message: 'Amount',
+      type: 'input'
+    })
+  }
+
+  if (argv.wallet == null) {
+    argv.wallet = await promptOne({
+      message: 'Wallet',
+      type: 'list',
+      choices: wallets,
+      transformer: (input, answer) => answer.name
+    })
+  }
   const wallet = wallets.find(({ _id, name }) => _id === argv.wallet || name === argv.wallet)
   const categories = await ml.getCategories(wallet._id)
+
+  if (argv.category == null) {
+    argv.category = await promptOne({
+      message: 'Category',
+      type: 'list',
+      choices: categories,
+      tranformer: (input, answer) => answer.name,
+      default: categories.find(({ metadata }) => metadata === 'IS_OTHER_INCOME')
+    })
+  }
   let category = argv.category != null && categories.find(({ name, _id }) => name === argv.category || _id === argv.category)
   if (!category) {
     category = categories.find(({ metadata }) => metadata === 'IS_OTHER_EXPENSE')
   }
+
+  if (argv.date == null) {
+    argv.date = await promptOne({
+      message: 'Date',
+      type: 'input',
+      default: 'today'
+    })
+  }
   const date = chrono.parseDate(argv.date)
+
+  if (argv.note == null) {
+    argv.note = await promptOne({
+      message: 'Note',
+      type: 'input'
+    })
+  }
 
   try {
     await ml.addTransaction({
