@@ -12,8 +12,7 @@ module.exports.builder = (yargs) => yargs
 
 module.exports.handler = async (argv) => {
   const jwt = require('jsonwebtoken')
-  const fse = require('fs-extra')
-  const { configFile } = require('../util')
+  const config = require('../config')
   const MoneyLover = require('../moneylover')
 
   let token
@@ -31,9 +30,9 @@ module.exports.handler = async (argv) => {
     const ml = new MoneyLover(token)
     const userInfo = await ml.getUserInfo()
     console.log(`Logged in as ${userInfo.email} until ${new Date(jwtToken.exp * 1000)}`)
-    await fse.writeJson(configFile, { jwtToken: token })
+    await config.set('jwtToken', token)
   } catch (e) {
-    console.error('Login failed')
+    console.error('Login failed', e)
     process.exitCode = 1
   }
 }

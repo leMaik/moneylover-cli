@@ -30,7 +30,7 @@ module.exports.handler = async (argv) => {
   const { getMoneyLover, printTransaction, promptOne } = require('../util')
 
   const ml = await getMoneyLover()
-  const wallets = await ml.getWallets()
+  const wallets = await ml.getWalletNames()
 
   if (argv.amount == null) {
     argv.amount = await promptOne({

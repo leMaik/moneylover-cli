@@ -11,15 +11,15 @@ module.exports.builder = (yargs) => yargs
   })
 
 module.exports.handler = async (argv) => {
-  const fse = require('fs-extra')
-  const { configFile } = require('../util')
-
-  try {
-    await fse.unlink(configFile)
-    console.log('Logged out')
-  } catch (e) {
-    if (e.code === 'ENOENT') {
-      console.error('Was not logged in')
+  const config = require('../config')
+  if (config.get('jwtToken') != null) {
+    try {
+      await config.clear()
+      console.log('Logged out')
+    } catch (e) {
+      console.error(e)
     }
+  } else {
+    console.error('Was not logged in')
   }
 }

@@ -1,4 +1,5 @@
 const popsicle = require('popsicle')
+const config = require('./config')
 
 class MoneyLoverClient {
   constructor (jwtToken) {
@@ -58,12 +59,30 @@ class MoneyLoverClient {
     return this._postRequest('/wallet/list')
   }
 
+  getWalletNames () {
+    return cached('wallets', () => {
+      return this._postRequest('/wallet/list')
+        .then((wallets) => wallets.map(({ name, balance, _id }) => {
+          for (const balanceItem of balance) {
+            for (const currency of Object.keys(balanceItem)) {
+              balanceItem[currency] = 0 // do not save balance to disk
+            }
+          }
+          return {
+            _id,
+            name,
+            balance
+          }
+        }))
+    })
+  }
+
   getCategories (walletId) {
-    return this._postRequest('/category/list', {
+    return cached(`${walletId}.categories`, () => this._postRequest('/category/list', {
       walletId
     }, {
       'Content-Type': 'application/x-www-form-urlencoded'
-    })
+    }))
   }
 
   addTransaction ({ account, category, amount, note, date }) {
@@ -97,4 +116,13 @@ function formatDate (date) {
   if (day.length < 2) day = '0' + day
 
   return [year, month, day].join('-')
+}
+
+async function cached (key, calculateValue) {
+  let value = await config.get(`cache.${key}`)
+  if (value == null) {
+    value = await calculateValue()
+    config.set(`cache.${key}`, value)
+  }
+  return value
 }

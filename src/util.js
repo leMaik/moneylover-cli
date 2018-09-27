@@ -1,18 +1,13 @@
-const os = require('os')
-const fse = require('fs-extra')
-const path = require('path')
 const { prompt } = require('inquirer')
 const MoneyLover = require('./moneylover')
-
-const configFile = path.join(os.homedir(), '.moneylovercli')
+const config = require('./config')
 
 async function getMoneyLover () {
-  const exists = await fse.exists(configFile)
-  if (!exists) {
+  if (config.get('jwtToken') == null) {
     console.error('Error: Not logged in')
     process.exit(1)
   }
-  return new MoneyLover((await fse.readJson(configFile)).jwtToken)
+  return new MoneyLover(await config.get('jwtToken'))
 }
 
 function printTransaction (transaction) {
@@ -31,7 +26,6 @@ function promptOne(question) {
 }
 
 module.exports = {
-  configFile,
   getMoneyLover,
   printTransaction,
   promptOne

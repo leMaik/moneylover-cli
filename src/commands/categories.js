@@ -20,7 +20,7 @@ module.exports.handler = async (argv) => {
   const MoneyLover = require('../moneylover')
 
   const ml = await getMoneyLover()
-  const wallets = await ml.getWallets()
+  const wallets = await ml.getWalletNames()
   const wallet = wallets.find(({ _id, name }) => _id === argv.wallet || name === argv.wallet)
   if (wallet == null) {
     console.error('Wallet not found')
