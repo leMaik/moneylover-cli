@@ -32,7 +32,9 @@ async function set (key, value) {
 }
 
 async function clear () {
-  await fse.unlink(configFile)
+  if (await fse.exists(configFile)) {
+    await fse.unlink(configFile)
+  }
   config = {}
 }
 
