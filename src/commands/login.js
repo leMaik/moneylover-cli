@@ -19,9 +19,14 @@ module.exports.handler = async (argv) => {
   if (argv.jwt) {
     token = argv.jwt
   } else if (argv.email) {
+    let email = argv.email
+    if (typeof email !== 'string') {
+      email = require('readline-sync')
+        .question('E-mail: ')
+    }
     const password = require('readline-sync')
       .question('Password: ', { hideEchoBack: true, mask: '' })
-    token = await MoneyLover.getToken(argv.email, password)
+    token = await MoneyLover.getToken(email, password)
   } else {
     token = await require('../chromeLogin')()
   }
@@ -31,8 +36,10 @@ module.exports.handler = async (argv) => {
     const userInfo = await ml.getUserInfo()
     console.log(`Logged in as ${userInfo.email} until ${new Date(jwtToken.exp * 1000)}`)
     await config.set('jwtToken', token)
+    return true
   } catch (e) {
     console.error('Login failed', e)
     process.exitCode = 1
+    return false
   }
 }
