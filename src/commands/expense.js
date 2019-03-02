@@ -56,7 +56,7 @@ module.exports.handler = async (argv) => {
       type: 'list',
       choices: categories,
       tranformer: (input, answer) => answer.name,
-      default: categories.find(({ metadata }) => metadata === 'IS_OTHER_INCOME')
+      default: categories.find(({ metadata }) => metadata === 'IS_OTHER_EXPENSE')
     })
   }
   let category = argv.category != null && categories.find(({ name, _id }) => name === argv.category || _id === argv.category)
