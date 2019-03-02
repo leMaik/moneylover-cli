@@ -29,7 +29,7 @@ module.exports.handler = async (argv) => {
     let categories = await ml.getCategories(wallet._id)
     if (argv.income) {
       categories = categories.filter(({ type }) => type === MoneyLover.CATEGORY_TYPE_INCOME)
-    } else if (argv.exppense) {
+    } else if (argv.expense) {
       categories = categories.filter(({ type }) => type === MoneyLover.CATEGORY_TYPE_EXPENSE)
     }
 
