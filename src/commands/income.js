@@ -28,6 +28,7 @@ module.exports.builder = (yargs) => yargs
 module.exports.handler = async (argv) => {
   const chrono = require('chrono-node')
   const { getMoneyLover, printTransaction, promptOne } = require('../util')
+  const MoneyLover = require('../moneylover')
 
   const ml = await getMoneyLover()
   const wallets = await ml.getWalletNames()
@@ -59,7 +60,7 @@ module.exports.handler = async (argv) => {
       default: categories.find(({ metadata }) => metadata === 'IS_OTHER_INCOME')
     })
   }
-  let category = argv.category != null && categories.find(({ name, _id }) => name === argv.category || _id === argv.category)
+  let category = argv.category != null && categories.find(({ name, type, _id }) => type === MoneyLover.CATEGORY_TYPE_INCOME && (name === argv.category || _id === argv.category))
   if (!category) {
     category = categories.find(({ metadata }) => metadata === 'IS_OTHER_INCOME')
   }
