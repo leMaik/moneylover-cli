@@ -3,7 +3,7 @@ module.exports.command = 'transactions <wallet>'
 module.exports.describe = 'Get the transactions list'
 module.exports.builder = (yargs) => yargs
   .positional('wallet', {
-    describe: 'The wallet name. Defaults to all wallets',
+    describe: 'The wallet name.',
     type: 'string'
   })
   .option('startDate', {
