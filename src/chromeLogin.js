@@ -14,7 +14,7 @@ async function loginWithChrome () {
   await Promise.all([Network.enable(), Page.enable()])
   return new Promise((resolve) => {
     Network.requestWillBeSent(async (params) => {
-      const match = /^https:\/\/web\.moneylover\.me\/login\?access_token=(.+?)&/i.exec(params.request.url)
+      const match = /^https:\/\/web\.moneylover\.me\/\?access_token=(.+?)&/i.exec(params.request.url)
       if (match) {
         await client.close()
         await chrome.kill()
