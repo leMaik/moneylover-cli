@@ -1,20 +1,19 @@
-let today = ((d) => {let month = d.getMonth()+1; month = (month < 10) ? `0${month}` : month; let day = d.getDate(); day = (day < 10) ? `0${day}` : day; return `${d.getFullYear()}-${month}-${day}`;})(new Date());
-module.exports.command = 'transactions <wallet>'
+module.exports.command = 'transactions [wallet]'
 module.exports.describe = 'Get the transactions list'
 module.exports.builder = (yargs) => yargs
   .positional('wallet', {
-    describe: 'The wallet name.',
+    describe: 'The wallet name',
     type: 'string'
   })
   .option('startDate', {
     describe: 'Show transactions starting from',
     type: 'string',
-    default: today
+    default: 'today'
   })
   .option('endDate', {
     describe: 'Show transactions ending at',
     type: 'string',
-    default: today
+    default: 'today'
   })
   .option('income', {
     describe: 'Only show income transactions',
@@ -26,14 +25,15 @@ module.exports.builder = (yargs) => yargs
   })
 
 module.exports.handler = async (argv) => {
+  const chrono = require('chrono-node')
   const Table = require('cli-table3')
-  const { getMoneyLover, printTransaction } = require('../util')
+  const { getMoneyLover } = require('../util')
   const MoneyLover = require('../moneylover')
 
   const ml = await getMoneyLover()
   const wallets = await ml.getWalletNames()
   let walletId = 'all'
-  if (argv.wallet !== 'all') {
+  if (argv.wallet) {
       let wallet = wallets.find(({ _id, name }) => _id === argv.wallet || name === argv.wallet)
       if (wallet == null) {
         console.error('Wallet not found')
@@ -43,7 +43,7 @@ module.exports.handler = async (argv) => {
       }
   }
 
-  let transactions = await ml.getTransactions(walletId, argv.startDate, argv.endDate)
+  let transactions = await ml.getTransactions(walletId, chrono.parseDate(argv.startDate), chrono.parseDate(argv.endDate))
 
   if (argv.income) {
     transactions = transactions.transactions.filter((t) => t.category.type === MoneyLover.CATEGORY_TYPE_INCOME)
@@ -59,7 +59,7 @@ module.exports.handler = async (argv) => {
   })
   for (const t of transactions) {
     table.push([
-      t.displayDate,
+      new Date(t.displayDate).toDateString(),
       t.account.name,
       t.note,
       t.category.type === MoneyLover.CATEGORY_TYPE_INCOME ? 'Income' : 'Expense',

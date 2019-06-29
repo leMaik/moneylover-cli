@@ -86,11 +86,11 @@ class MoneyLoverClient {
   }
 
   getTransactions (walletId, startDate, endDate) {
-    return cached(`${walletId}.transactions.${startDate}.${endDate}`, () => this._postRequest('/transaction/list', {
-      walletId, startDate, endDate
-    }, {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }))
+    return this._postRequest('/transaction/list', {
+      startDate: startDate.toISOString().substr(0, 10),
+      endDate: endDate.toISOString().substr(0, 10),
+      walletId // "all" to get the transactions of all wallets
+    })
   }
 
   addTransaction ({ account, category, amount, note, date }) {
