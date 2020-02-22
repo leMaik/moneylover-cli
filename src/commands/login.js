@@ -1,8 +1,12 @@
-module.exports.command = 'login [email]'
+module.exports.command = 'login [email] [password]'
 module.exports.describe = 'Authenticate'
 module.exports.builder = (yargs) => yargs
   .positional('email', {
     describe: 'E-mail address',
+    type: 'string'
+  })
+  .positional('password', {
+    describe: 'Password',
     type: 'string'
   })
   .option('jwt', {
@@ -24,8 +28,11 @@ module.exports.handler = async (argv) => {
       email = require('readline-sync')
         .question('E-mail: ')
     }
-    const password = require('readline-sync')
+    let password = argv.password
+    if (typeof password !== 'string') {
+      password = require('readline-sync')
       .question('Password: ', { hideEchoBack: true, mask: '' })
+    }
     token = await MoneyLover.getToken(email, password)
   } else {
     token = await require('../chromeLogin')()
