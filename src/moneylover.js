@@ -94,17 +94,15 @@ class MoneyLoverClient {
   }
 
   addTransaction ({ account, category, amount, note, date }) {
-    return this._postRequest('/transaction/add', {
-      transInfo: JSON.stringify({
+    return this._postRequest('/transaction/add', JSON.stringify({
         with: [], // TODO
         account,
         category,
         amount,
         note,
         displayDate: formatDate(date)
-      })
-    }, {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      }), {
+      'Content-Type': 'application/json'
     })
   }
 }
