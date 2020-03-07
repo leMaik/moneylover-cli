@@ -35,6 +35,6 @@
     "jsonwebtoken": "^8.2.1",
     "popsicle": "^9.2.0",
     "readline-sync": "^1.4.9",
-    "yargs": "^11.0.0"
+    "yargs": "^15.1.0"
   }
 }
