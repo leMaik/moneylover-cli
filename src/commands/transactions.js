@@ -23,10 +23,15 @@ module.exports.builder = (yargs) => yargs
     describe: 'Only show expense transactions',
     type: 'bool'
   })
+  .option('format', {
+    describe: 'output format',
+    type: 'string',
+    choices: ['raw', 'table'],
+    default: 'table'
+  })
 
 module.exports.handler = async (argv) => {
   const chrono = require('chrono-node')
-  const Table = require('cli-table3')
   const { getMoneyLover } = require('../util')
   const MoneyLover = require('../moneylover')
 
@@ -53,19 +58,28 @@ module.exports.handler = async (argv) => {
     transactions = transactions.transactions;
   }
 
-  const table = new Table({
-    chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
-    head: ['Date', 'Wallet', 'Note', 'Type', 'Category', 'Amount']
-  })
-  for (const t of transactions) {
-    table.push([
-      new Date(t.displayDate).toDateString(),
-      t.account.name,
-      t.note,
-      t.category.type === MoneyLover.CATEGORY_TYPE_INCOME ? 'Income' : 'Expense',
-      t.category.name,
-      Math.floor(t.amount * 100) / 100
-    ])
+  switch(argv.format) {
+    case "table":
+      const Table = require('cli-table3')
+      const table = new Table({
+        chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
+        head: ['Date', 'Wallet', 'Note', 'Type', 'Category', 'Amount']
+      })
+      for (const t of transactions) {
+        table.push([
+          new Date(t.displayDate).toDateString(),
+          t.account.name,
+          t.note,
+          t.category.type === MoneyLover.CATEGORY_TYPE_INCOME ? 'Income' : 'Expense',
+          t.category.name,
+          Math.floor(t.amount * 100) / 100
+        ])
+      }
+      console.log(table.toString())
+      break;
+    case "raw":
+      console.log(JSON.stringify(transactions));
+      break;
   }
-  console.log(table.toString())
+
 }
