@@ -9,4 +9,6 @@ require('yargs')
   .command(require('./commands/expense'))
   .command(require('./commands/income'))
   .command(require('./commands/transactions'))
+  .command(require('./commands/export'))
+  .command(require('./commands/GSheet'))
   .argv
